@@ -12,6 +12,7 @@ wheels/
 # Agent files
 AGENTS.md
 GEMINI.md
+SESSION_SUMMARY.md
 
 # IDE files
 .idea/
