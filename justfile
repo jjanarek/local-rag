@@ -42,6 +42,10 @@ ui:
 local-setup:
     docker-compose up -d
 
+llama:
+    docker-compose up -d
+    docker exec -it ollama ollama run llama3
+
 # CLEANUP
 clean:
     rm -rf .venv .mypy_cache .pytest_cache build/ dist/ *.egg-info

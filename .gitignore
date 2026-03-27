@@ -16,3 +16,7 @@ SESSION_SUMMARY.md
 
 # IDE files
 .idea/
+
+# Docker storage
+qdrant_storage/
+ollama_storage/
