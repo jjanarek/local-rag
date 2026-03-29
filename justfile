@@ -42,6 +42,9 @@ ui:
 local-setup:
     docker-compose up -d
 
+stop:
+    docker-compose down
+
 llama:
     docker-compose up -d
     docker exec -it ollama ollama run llama3
