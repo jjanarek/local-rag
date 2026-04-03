@@ -1,4 +1,5 @@
 from .base import BaseReader
+from .pdf_reader import PDFReader
 from .text_reader import TextReader
 
-__all__ = ["BaseReader", "TextReader"]
+__all__ = ["BaseReader", "TextReader", "PDFReader"]

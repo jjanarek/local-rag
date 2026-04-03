@@ -20,3 +20,6 @@ SESSION_SUMMARY.md
 # Docker storage
 qdrant_storage/
 ollama_storage/
+
+# local testarea
+testarea/

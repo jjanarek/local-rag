@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-import anyio
+from anyio.to_thread import run_sync
 
 from core.models import Document, DocumentMetadata
 
@@ -23,7 +25,7 @@ class TextReader(BaseReader):
             with open(file_path, encoding="utf-8") as f:
                 return f.read()
 
-        content: str = await anyio.to_thread.run_sync(read_sync)  # type: ignore
+        content: str = await run_sync(read_sync)
 
         metadata = DocumentMetadata(
             source=str(file_path), file_type=file_path.suffix, page_number=None
