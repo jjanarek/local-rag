@@ -77,6 +77,10 @@ class DocumentCleaner:
             return ""
         # Collapse 3+ newlines to 2 (preserves paragraphs)
         text = re.sub(r"\n{3,}", "\n\n", text)
+        # Remove spaces/tabs at the end of lines
+        text = re.sub(r"[ \t]+\n", "\n", text)
+        # Remove spaces/tabs at the beginnig
+        text = re.sub(r"\n[ \t]+", "\n", text)
         # Collapse whitespaces into a single space
         text = re.sub(r"[ \t]{2,}", " ", text)
         # Final strip
@@ -90,7 +94,7 @@ class DocumentCleaner:
         if not text:
             return ""
         # Remove ligatures, fractions, etc
-        return unicodedata.normalize("NFKC", text)
+        return unicodedata.normalize("NFKC", text).replace("\u2044", "/")
 
     @staticmethod
     def standardize_bullet_points(text: str) -> str:
