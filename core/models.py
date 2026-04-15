@@ -37,3 +37,16 @@ class DocumentChunk(BaseModel):
         default_factory=lambda: datetime.now(UTC).isoformat(),
         description="The UTC timestamp when this chunk was created.",
     )
+
+
+class IngestionResult(BaseModel):
+    status: str = Field(..., description="Status: 'success', 'error', or 'skipped'")
+    file_path: str = Field(..., description="Path of the processed file.")
+    chunks_count: int = Field(default=0, description="Number of chunks created and stored.")
+    source: str | None = Field(default=None, description="Source identifier from metadata.")
+    duration: float = Field(default=0.0, description="Time taken in seconds.")
+    message: str | None = Field(default=None, description="Error message or success details.")
+    processed_at: str = Field(
+        default_factory=lambda: datetime.now(UTC).isoformat(),
+        description="The UTC timestamp when the ingestion was completed.",
+    )
