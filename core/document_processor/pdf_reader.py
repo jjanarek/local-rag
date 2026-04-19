@@ -36,7 +36,7 @@ class PDFReader(BaseReader):
                     page_content = page.extract_text()
                     page_content = page_content.strip() if page_content else ""
                     page_metadata = DocumentMetadata(
-                        source=str(file_path),
+                        source=str(file_path.name),
                         page_number=num_page,
                         file_type=file_path.suffix,
                         extra={"total_pages": total_pages},

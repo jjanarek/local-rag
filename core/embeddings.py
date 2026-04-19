@@ -27,6 +27,14 @@ class EmbeddingService:
             self._model = SentenceTransformer(self.model_name)
         return self._model
 
+    async def embed_query(self, text: str) -> list[float]:
+        """
+        Generate an embnedding for a single text query for search.
+        """
+        # Use anyio to run embedding in a separate thread
+        embedding = await run_sync(self._embed_sync, [text])
+        return embedding[0].tolist()
+
     async def embed_chunks(self, chunks: list[DocumentChunk]) -> list[DocumentChunk]:
         """
         Generate embeddings for a list of DocumentChunks.

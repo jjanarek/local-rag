@@ -197,3 +197,27 @@
 ## 📝 Notes
 - Architecture follows Senior-level best practices: Single Responsibility Principle (SRP) for services and the Orchestrator Pattern for the pipeline.
 - The system is now logically complete for the ingestion layer; final verification against live infrastructure is the last hurdle before moving to the FastAPI layer (Step 4).
+
+# Session 9 - April 19, 2026
+
+## 📋 Today's Progress
+- **Step 3.11: Validation & Integration Tests** is complete.
+- We finalized the ingestion pipeline by adding comprehensive tests.
+    - Implemented unit tests for the `IngestionPipeline` using `unittest.mock.AsyncMock` to isolate logic from external services.
+    - Updated `PDFReader` and `TextReader` to use only the filename for the `source` metadata instead of the full path.
+    - Added an `embed_query` method to `EmbeddingService` for search purposes.
+    - Created and executed a live integration script (`scripts/test_ingestion_live.py`) against a local Dockerized Qdrant instance.
+
+## 🛠️ Completed Tasks
+- [x] `tests/test_processor.py`: Unit tests for orchestrator logic.
+- [x] `core/document_processor/pdf_reader.py` & `text_reader.py`: Refined metadata extraction.
+- [x] `core/embeddings.py`: Added public `embed_query` method.
+- [x] `scripts/test_ingestion_live.py`: Full end-to-end integration test confirming successful data extraction, embedding, storage, and retrieval.
+
+## 🚀 Next Session
+- **Task:** Step 4: FastAPI Development.
+- **Goal:** Create the REST API endpoints (`/upload` and `/chat`) to expose our core ingestion and retrieval logic to the frontend.
+
+## 📝 Notes
+- We effectively navigated the distinction between `pytest` runners and `unittest` mocks.
+- The system correctly mapped a user query to the specific page of an uploaded document using cosine similarity.
