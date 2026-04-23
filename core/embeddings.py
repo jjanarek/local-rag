@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from anyio.to_thread import run_sync
 from sentence_transformers import SentenceTransformer
@@ -33,7 +33,7 @@ class EmbeddingService:
         """
         # Use anyio to run embedding in a separate thread
         embedding = await run_sync(self._embed_sync, [text])
-        return embedding[0].tolist()
+        return cast("list[float]", embedding[0].tolist())
 
     async def embed_chunks(self, chunks: list[DocumentChunk]) -> list[DocumentChunk]:
         """
@@ -56,3 +56,8 @@ class EmbeddingService:
     def _embed_sync(self, texts: list[str]) -> np.ndarray:
         """Wrapper for synchronous calculation of embeddings"""
         return self.model.encode(texts, show_progress_bar=False)
+
+
+def setup_embedding_service(model_name: str) -> EmbeddingService:
+    """Factory function to init. the serive"""
+    return EmbeddingService(model_name=model_name)

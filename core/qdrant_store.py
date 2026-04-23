@@ -112,3 +112,7 @@ class QdrantStore(VectorStore):
     ) -> None:
         """Gracefully close the connection to QDrant vector database."""
         await self.client.close()
+
+
+def setup_qdrant_service(url: str, collection_name: str) -> QdrantStore:
+    return QdrantStore(url=url, collection_name=collection_name)
