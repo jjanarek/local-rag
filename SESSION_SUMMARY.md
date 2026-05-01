@@ -274,3 +274,32 @@
 ## 📝 Notes
 - The "Fail-Fast" validation in the API layer ensures we only process supported file types (.pdf, .txt, .md).
 - Using `cast` for FastAPI state is established as a project best practice for strict typing.
+
+# Session 12 - May 1, 2026
+
+## 📋 Today's Progress
+- **Step 4.4: Retrieval & Chat** is nearing completion.
+    - Implemented chat-specific data models (`ChatRequest`, `ChatResponse`, `ChatSource`) with full `Field` documentation.
+    - Refined the `VectorStore` interface to return similarity scores as tuples (`list[tuple[DocumentChunk, float]]`).
+    - Added centralized RAG prompt management in `core/prompts.py`.
+    - Implemented a robust `/chat/` endpoint with:
+        - **Configurable Filtering**: Uses `MIN_SCORE` and `MAX_NUMBER_OF_HITS` from settings.
+        - **Context Augmentation**: Dynamically builds system prompts based on retrieved chunks.
+        - **Role-Aware History**: Preserves `user` and `assistant` roles for conversational continuity.
+    - Verified the entire RAG pipeline through live API tests, confirming successful grounded answering and graceful "no context" handling.
+
+## 🛠️ Completed Tasks
+- [x] `core/models.py`: Added Chat models.
+- [x] `core/vector_store.py` & `core/qdrant_store.py`: Updated search signature for scores.
+- [x] `core/config.py`: Added search parameters.
+- [x] `core/prompts.py`: Centralized system prompts.
+- [x] `api/routers/chat.py`: Implemented the RAG orchestrator.
+- [x] `api/main.py`: Registered the chat router.
+
+## 🚀 Next Session
+- **Task**: Step 4.4.3: Streaming Responses.
+- **Goal**: Implement the `StreamingResponse` generator to provide a real-time "typing" experience in the UI.
+
+## 📝 Notes
+- Live tests confirmed that Llama 3 correctly follows the system prompt instructions to avoid hallucinations when no documents are relevant.
+- Similarity scores for the `all-MiniLM-L6-v2` model are consistently around 0.5 for high-quality matches.

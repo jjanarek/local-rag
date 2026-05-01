@@ -46,8 +46,8 @@ The API layer acts as the orchestrator between the frontend (Streamlit) and our 
 2. [x] **4.2 Boilerplate**: Create `api/main.py` with Lifespan, DI providers, and health check.
 3. [x] **4.3 Ingestion Route**: Implement `/ingest/file` using `IngestionPipeline`.
 4. [ ] **4.4 Retrieval & Chat**: 
-    - [ ] Update `core/models.py` with Chat models.
-    - [ ] Create `api/routers/chat.py` with context retrieval.
+    - [x] Update `core/models.py` with Chat models.
+    - [x] Create `api/routers/chat.py` with context retrieval.
     - [ ] Support streaming responses.
 5. [ ] **4.5 Validation**: API-level integration tests with `httpx`.
 

@@ -30,9 +30,10 @@ async def main() -> None:
     # perform the search
     document_hits = await vector_store.search(query_vector=embedding, limit=3)
 
-    for i, chunk in enumerate(document_hits, 1):
+    for i, (chunk, score) in enumerate(document_hits, 1):
         logger.info("###" * 8)
         logger.info(f"Hit {i}")
+        logger.info(f"\tScore: {score}")
         logger.info(f"\tSource: {chunk.metadata.source}")
         logger.info(f"\tPage: {chunk.metadata.page_number}")
         logger.info(f"\tCountent snippet: {chunk.content[:100]}...")

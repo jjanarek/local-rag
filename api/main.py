@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 
-from api.routers import ingestion
+from api.routers import chat, ingestion
 from core.config import settings
 from core.embeddings import setup_embedding_service
 from core.llm import setup_chat_service
@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 app.include_router(ingestion.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")

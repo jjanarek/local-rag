@@ -16,7 +16,9 @@ class VectorStore(ABC):
         pass
 
     @abstractmethod
-    async def search(self, query_vector: list[float], limit: int) -> list[DocumentChunk]:
+    async def search(
+        self, query_vector: list[float], limit: int
+    ) -> list[tuple[DocumentChunk, float]]:
         """
         Find similar vectors to the query vector.
         """

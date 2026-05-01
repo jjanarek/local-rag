@@ -50,3 +50,29 @@ class IngestionResult(BaseModel):
         default_factory=lambda: datetime.now(UTC).isoformat(),
         description="The UTC timestamp when the ingestion was completed.",
     )
+
+
+class Message(BaseModel):
+    role: str = Field(..., description="Role: system, user, or assistant")
+    content: str = Field(..., description="Text content")
+
+
+class ChatRequest(BaseModel):
+    query: str = Field(..., description="The user's query.")
+    history: list[Message] = Field(default_factory=list, description="Conversation history.")
+    stream: bool = Field(default=False, description="Whether to stream the response.")
+    parameters: dict[str, Any] = Field(default_factory=dict, description="LLM settings.")
+
+
+class ChatSource(BaseModel):
+    content: str = Field(..., description="The text chunk used as context.")
+    source: str = Field(..., description="The source document name.")
+    page_number: int | None = Field(None, description="The page number if applicable.")
+    score: float = Field(..., description="The similarity score.")
+
+
+class ChatResponse(BaseModel):
+    answer: str = Field(..., description="The generated response from the LLM.")
+    sources: list[ChatSource] = Field(
+        default_factory=list, description="The context chunks used for retrieval."
+    )

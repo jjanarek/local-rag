@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     # File limits
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10MB default
 
+    # Vector Search
+    MIN_SCORE: float = 0.4
+    MAX_NUMBER_OF_HITS: int = 5
+
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False
     )

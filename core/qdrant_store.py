@@ -65,7 +65,9 @@ class QdrantStore(VectorStore):
     def _get_uuid_for_qdrant(self, chunk_id: str) -> str:
         return str(uuid.UUID(chunk_id[:32]))
 
-    async def search(self, query_vector: list[float], limit: int) -> list[DocumentChunk]:
+    async def search(
+        self, query_vector: list[float], limit: int
+    ) -> list[tuple[DocumentChunk, float]]:
         """
         Perform a search using a query vector.
         Returns a list of DocumentChunks
@@ -92,7 +94,7 @@ class QdrantStore(VectorStore):
                 metadata=metadata,
                 chunk_index=hit.payload["chunk_index"],
             )
-            results.append(chunk)
+            results.append((chunk, hit.score))
 
         return results
 
