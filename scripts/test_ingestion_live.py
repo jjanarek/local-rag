@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
-async def main():
+async def main() -> None:
     embedder = EmbeddingService()
     vector_store = QdrantStore(url="http://localhost:6333", collection_name="test_collection")
 

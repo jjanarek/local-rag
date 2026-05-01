@@ -221,3 +221,56 @@
 ## 📝 Notes
 - We effectively navigated the distinction between `pytest` runners and `unittest` mocks.
 - The system correctly mapped a user query to the specific page of an uploaded document using cosine similarity.
+
+# Session 10 - April 23, 2026
+
+## 📋 Today's Progress
+- **Step 4: FastAPI Development** has officially started.
+- Created `PLAN_FOR_API.md` to outline the modular architecture and OpenAI-compatible pattern for the chat service.
+- Implemented **Step 4.1: Configuration Management** in `core/config.py` using `pydantic-settings`.
+- Implemented **Step 4.2: Resource Lifecycle & LLM Service**.
+    - Built a production-ready, vendor-agnostic `BaseChatService` interface and `OpenAIChatService` in `core/llm.py`.
+    - Established the FastAPI application in `api/main.py` using the **Lifespan** pattern for managing singleton services (Embeddings, Vector Store, LLM).
+    - Added modular factory setup functions (`setup_*`) to all core service files to maintain clean separation between configuration and initialization.
+- Verified the entire core and API layers with strict `mypy` and `ruff` checks.
+
+## 🛠️ Completed Tasks
+- [x] `PLAN_FOR_API.md`: Comprehensive roadmap for the FastAPI layer.
+- [x] `core/config.py`: Type-safe configuration management.
+- [x] `core/llm.py`: Abstract LLM interface and OpenAI-compatible implementation.
+- [x] `api/main.py`: FastAPI entry point with lifespan singleton management.
+- [x] Full codebase verification with strict typing.
+
+## 🚀 Next Session
+- **Task:** Step 4.3: Implement the Ingestion Endpoint.
+- **Goal:** Create the `/ingest/file` route and set up Dependency Injection (DI) providers for the core services.
+
+## 📝 Notes
+- Using the OpenAI-compatible SDK for Ollama ensures the system is "Vendor Agnostic" and easily switchable to other providers.
+- The Lifespan pattern in FastAPI provides a robust way to handle the expensive initialization of ML models and DB connections.
+
+# Session 11 - May 1, 2026
+
+## 📋 Today's Progress
+- **Step 4: FastAPI Development** is progressing rapidly.
+- **Step 4.2 & 4.3: Infrastructure & Ingestion** are complete.
+    - Restructured the API into a modular `routers/` pattern for scalability.
+    - Implemented a robust Dependency Injection (DI) layer in `api/dependencies.py` with strict type casting for `mypy` compatibility.
+    - Built the `/ingest/file` endpoint with automatic temporary file streaming and cleanup.
+    - Fixed a critical "Metadata Leak" where original filenames were being lost during ingestion.
+- Achieved **Full Project Verification**: The entire codebase now passes `ruff` (linting/formatting) and `mypy` (strict type checking) with zero issues.
+
+## 🛠️ Completed Tasks
+- [x] `api/dependencies.py`: Type-safe DI providers.
+- [x] `api/routers/ingestion.py`: Modular ingestion router.
+- [x] `api/main.py`: Clean entry point with router registration.
+- [x] `api/__init__.py` & `api/routers/__init__.py`: Package grounding for module resolution.
+- [x] Refined `core/processor.py` and `api/routers/ingestion.py` to preserve original filenames.
+
+## 🚀 Next Session
+- **Task**: Step 4.4: Retrieval & Chat.
+- **Goal**: Implement the `/chat` endpoint, integrate context retrieval from Qdrant, and connect the system to Ollama for answer generation.
+
+## 📝 Notes
+- The "Fail-Fast" validation in the API layer ensures we only process supported file types (.pdf, .txt, .md).
+- Using `cast` for FastAPI state is established as a project best practice for strict typing.

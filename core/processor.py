@@ -26,13 +26,14 @@ class DocumentProcessor:
     def __init__(self) -> None:
         self.factory = DocumentReaderFactory()
 
-    async def process_file(
-        self,
-        file_path: Path,
-    ) -> list[Document]:
+    async def process_file(self, file_path: Path, source_name: str | None = None) -> list[Document]:
         reader = self.factory.get_reader(file_path)
 
         documents = await reader.load(file_path)
+
+        if source_name:
+            for doc in documents:
+                doc.metadata.source = source_name
 
         for doc in documents:
             DocumentCleaner.clean_document(doc)
@@ -64,17 +65,19 @@ class IngestionPipeline:
         self.processor = DocumentProcessor()
         self.chunker = DocumentChunker()
 
-    async def ingest_file(self, file_path: Path) -> IngestionResult:
+    async def ingest_file(
+        self, file_path: Path, original_filename: str | None = None
+    ) -> IngestionResult:
         """
         Process a single file from raw bytes to vector store.
         This method contains the actual recipe for ingesting files into vector database.
         The recipe is performed step by step so that the errors are handled gracefully.
         """
         start_time = time.perf_counter()
-        source_name = file_path.name
+        source_name = original_filename or file_path.name
 
         try:
-            documents = await self.processor.process_file(file_path)
+            documents = await self.processor.process_file(file_path, source_name=source_name)
             if not documents:
                 return IngestionResult(
                     status="skipped",
