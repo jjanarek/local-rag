@@ -301,5 +301,30 @@
 - **Goal**: Implement the `StreamingResponse` generator to provide a real-time "typing" experience in the UI.
 
 ## 📝 Notes
-- Live tests confirmed that Llama 3 correctly follows the system prompt instructions to avoid hallucinations when no documents are relevant.
-- Similarity scores for the `all-MiniLM-L6-v2` model are consistently around 0.5 for high-quality matches.
+# Session 13 - May 2, 2026
+
+## 📋 Today's Progress
+- **Step 4: FastAPI Development** is officially complete.
+- **Step 4.4.3: Streaming Responses** was successfully implemented.
+    - Updated `BaseChatService` and `OpenAIChatService` to support async generators.
+    - Built a robust `stream_generator` in `api/routers/chat.py` using **NDJSON** for real-time delivery of both sources and answer tokens.
+    - Handled "Intra-stream" error catching to ensure the frontend receives error packets if the LLM fails mid-sentence.
+- **Step 4.5: Validation** was completed with a comprehensive integration test suite.
+    - Implemented `tests/test_api.py` using `httpx.ASGITransport` for in-memory API testing.
+    - Used `Dependency Overrides` to mock heavy services (LLM, Vector DB, Ingestion Pipeline) during tests.
+    - Verified Health Check, Ingestion (Success/Failure), and Chat (Atomic/Streaming) flows.
+    - Achieved 100% pass rate on API integration tests.
+
+## 🛠️ Completed Tasks
+- [x] `core/llm.py`: Refined async generator interface.
+- [x] `api/routers/chat.py`: Finalized streaming logic and error handling.
+- [x] `tests/test_api.py`: Automated integration tests for the entire API layer.
+- [x] `scripts/test_streaming.py`: Manual verification script for LLM streaming.
+
+## 🚀 Next Session
+- **Task**: Step 5: Frontend Development (Streamlit).
+- **Goal**: Build the interactive UI to allow users to upload files and chat with their documents using the new streaming API.
+
+## 📝 Notes
+- We successfully navigated complex `mypy` typing issues related to `AsyncIterator` and `AsyncGenerator`.
+- The system is now 100% verified (linting, typing, unit tests, and integration tests) and ready for a user-facing interface.
