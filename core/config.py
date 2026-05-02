@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Local RAG API"
     DEBUG: bool = True
     CORS_ORIGINS: list[str] = ["http://localhost:8501", "http://localhost:3000"]
+    API_BASE_URL: str = "http://localhost:8000"
 
     # Vector DB
     QDRANT_URL: str = "http://localhost:6333"

@@ -328,3 +328,29 @@
 ## 📝 Notes
 - We successfully navigated complex `mypy` typing issues related to `AsyncIterator` and `AsyncGenerator`.
 - The system is now 100% verified (linting, typing, unit tests, and integration tests) and ready for a user-facing interface.
+
+# Session 14 - May 2, 2026
+
+## 📋 Today's Progress
+- **Step 5: Frontend Development (Streamlit)** is well underway and functional.
+- Created `PLAN_FOR_UI.md` to guide the UI architecture and educational objectives.
+- Implemented a production-grade Streamlit application in `ui/app.py`:
+    - **Boilerplate & State:** Established `st.session_state` for chat history and document tracking.
+    - **Ingestion UI:** Built a robust file uploader in the sidebar with size validation and automatic form resetting using the "key-increment" pattern.
+    - **Health Monitoring:** Implemented a background connection probe using `st.fragment` to ping the `/health` endpoint every 5 seconds.
+    - **Streaming Chat:** Built a custom NDJSON parser for real-time streaming of both context sources and answer tokens.
+    - **UX Enhancements:** Integrated `st.status` for "Thinking..." feedback and a typing cursor for a smoother LLM interaction.
+- Identified and planned for **Knowledge Base Management** (Backend-driven listing/deletion) to replace session-only tracking.
+
+## 🛠️ Completed Tasks
+- [x] `PLAN_FOR_UI.md`: Roadmap for UI and full-stack integration.
+- [x] `ui/app.py`: Fully functional RAG interface with streaming.
+- [x] `core/config.py`: Added `API_BASE_URL` for centralized connectivity.
+
+## 🚀 Next Session
+- **Task**: Step 5.4: Knowledge Base Management (Integration).
+- **Goal**: Implement `GET /ingest/files` and `DELETE /ingest/file` in the backend and sync them with the UI to provide a persistent document inventory. Refactor Chat API to safely handle slider overrides.
+
+## 📝 Notes
+- Streamlit's "Re-run" model was successfully mastered through `st.session_state` and `st.fragment`.
+- Using `httpx` with `response.iter_lines()` proved robust for handling our custom NDJSON stream.
