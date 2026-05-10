@@ -6,10 +6,10 @@ from pydantic import BaseModel, Field
 
 class DocumentMetadata(BaseModel):
     source: str = Field(..., description="The name or path of the source file.")
-    page_number: int | None = Field(
-        None, description="The page number from which the text was extracted"
-    )
     file_type: str = Field(..., description="The original file format.")
+    page_number: int | None = Field(
+        default=None, description="The page number from which the text was extracted"
+    )
     extra: dict[str, Any] = Field(default_factory=dict, description="Any additional metadata.")
 
 

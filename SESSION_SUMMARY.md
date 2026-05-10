@@ -354,3 +354,33 @@
 ## 📝 Notes
 - Streamlit's "Re-run" model was successfully mastered through `st.session_state` and `st.fragment`.
 - Using `httpx` with `response.iter_lines()` proved robust for handling our custom NDJSON stream.
+
+# Session 15 - May 10, 2026
+
+## 📋 Today's Progress
+- **Step 5.4: Knowledge Base Management (Backend & Integration)** is complete.
+    - **Vector Store Enhancements**: Added `list_documents` to the abstract `VectorStore` and implemented it in `QdrantStore` using the efficient `scroll` API (payload-only).
+    - **Inventory API**: Implemented `GET /ingest/files` to provide a persistent, backend-driven document list for the UI.
+    - **Cleanup API**: Implemented `DELETE /ingest/file/{source_name}` for full document and chunk removal.
+    - **Dynamic Search Overrides**: Refactored the `/chat/` endpoint to respect `top_k` and `min_score` overrides from the request payload, enabling real-time UI tuning.
+    - **Strict Typing Polish**: Refined `DocumentMetadata` field ordering to resolve Pydantic/LSP "Argument Order" warnings and ensure perfect IDE support.
+- **Full API Verification**: 
+    - Added 3 new integration tests to `tests/test_api.py` covering Listing, Deletion, and Search Overrides.
+    - Achieved 100% pass rate across the expanded test suite (8 tests).
+    - Verified backend compliance with `ruff` and `mypy` (zero issues).
+
+## 🛠️ Completed Tasks
+- [x] `core/vector_store.py` & `core/qdrant_store.py`: Document listing capability.
+- [x] `api/routers/ingestion.py`: Inventory and Deletion endpoints.
+- [x] `api/routers/chat.py`: Support for request-time search overrides.
+- [x] `core/models.py`: Optimized model field ordering.
+- [x] `tests/test_api.py`: Verified all Knowledge Base management logic.
+
+## 🚀 Next Session
+- **Task**: Step 5.4.2: UI Knowledge Base Integration.
+- **Goal**: Connect the Streamlit sidebar to the new inventory/deletion endpoints and integrate the search sliders into the chat pipeline.
+
+## 📝 Notes
+- The transition from session-based tracking to backend-driven inventory makes the system feel truly production-ready.
+- The use of `with_payload` filtering in Qdrant ensures listing remains fast even with thousands of chunks.
+

@@ -102,6 +102,54 @@ async def test_chat_streaming():
 
 
 @pytest.mark.asyncio
+async def test_chat_overrides():
+    mock_chat = AsyncMock()
+    mock_chat.chat.return_value = "Answer"
+    mock_embed = AsyncMock()
+    mock_embed.embed_query.return_value = [0.1] * 384
+
+    mock_vector = AsyncMock()
+
+    # Return two hits: one high score, one low score
+    hits = [
+        (
+            DocumentChunk(
+                chunk_id="1",
+                content="High",
+                metadata=DocumentMetadata(source="s", file_type="txt"),
+                chunk_index=0,
+            ),
+            0.9,
+        ),
+        (
+            DocumentChunk(
+                chunk_id="2",
+                content="Low",
+                metadata=DocumentMetadata(source="s", file_type="txt"),
+                chunk_index=1,
+            ),
+            0.4,
+        ),
+    ]
+    mock_vector.search.return_value = hits
+
+    app.dependency_overrides[get_chat_service] = lambda: mock_chat
+    app.dependency_overrides[get_embedding_service] = lambda: mock_embed
+    app.dependency_overrides[get_vector_store] = lambda: mock_vector
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        payload = {"query": "q", "parameters": {"min_score": 0.8, "top_k": 5}}
+        response = await client.post("/chat/", json=payload)
+        assert len(response.json()["sources"]) == 1
+
+        payload = {"query": "q", "parameters": {"min_score": 0.3}}
+        response = await client.post("/chat/", json=payload)
+        assert len(response.json()["sources"]) == 2
+
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
 async def test_ingest_file_success():
     mock_pipeline = AsyncMock()
     mock_pipeline.ingest_file.return_value = IngestionResult(
@@ -135,3 +183,39 @@ async def test_ingest_unsupported():
 
     assert response.status_code == 400
     assert "not supported" in response.json()["detail"]
+
+
+@pytest.mark.asyncio
+async def test_list_files():
+    mock_vector = AsyncMock()
+    mock_vector.list_documents.return_value = ["doc1.pdf", "doc2.txt"]
+
+    mock_pipeline = MagicMock()
+    mock_pipeline.vector_store = mock_vector
+
+    app.dependency_overrides[get_ingestion_pipeline] = lambda: mock_pipeline
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/ingest/files")
+
+    assert response.status_code == 200
+    assert response.json() == ["doc1.pdf", "doc2.txt"]
+    mock_vector.list_documents.assert_called_once()
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_delete_files():
+    mock_vector = AsyncMock()
+    mock_pipeline = MagicMock()
+    mock_pipeline.vector_store = mock_vector
+
+    app.dependency_overrides[get_ingestion_pipeline] = lambda: mock_pipeline
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.delete("/ingest/file/test.pdf")
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "success"
+    mock_vector.delete.assert_called_once_with("test.pdf")
+    app.dependency_overrides.clear()

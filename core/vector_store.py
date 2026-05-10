@@ -25,6 +25,11 @@ class VectorStore(ABC):
         pass
 
     @abstractmethod
+    async def list_documents(self) -> list[str]:
+        """Lists all unique source names in the vector database."""
+        pass
+
+    @abstractmethod
     async def delete(self, source_name: str) -> None:
         """
         Remove chunks for a given document.

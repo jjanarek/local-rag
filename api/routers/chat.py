@@ -35,8 +35,11 @@ async def chat_retrieval(
     try:
         query_embedding = await embedding_service.embed_query(request.query)
 
+        top_k = request.parameters.get("top_k", settings.MAX_NUMBER_OF_HITS)
+        min_score = request.parameters.get("min_score", settings.MIN_SCORE)
+
         hits: list[tuple[DocumentChunk, float]] = await vector_store.search(
-            query_embedding, limit=settings.MAX_NUMBER_OF_HITS
+            query_embedding, limit=top_k
         )
 
         sources = [
@@ -47,7 +50,7 @@ async def chat_retrieval(
                 score=score,
             )
             for chunk, score in hits
-            if score >= settings.MIN_SCORE
+            if score >= min_score
         ]
 
         context_block = "\n---\n".join([s.content for s in sources])

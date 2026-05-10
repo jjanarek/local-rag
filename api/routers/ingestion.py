@@ -48,3 +48,21 @@ async def ingest_file(
     finally:
         if tmp_path.exists():
             tmp_path.unlink()
+
+
+@router.get("/files", response_model=list[str])
+async def list_files(
+    pipeline: IngestionPipeline = Depends(get_ingestion_pipeline),  # noqa: B008
+) -> list[str]:
+    """Get a sorted list of all unique documents in the knowedge base."""
+    return await pipeline.vector_store.list_documents()
+
+
+@router.delete("/file/{source_name}")
+async def delete_file(
+    source_name: str,
+    pipeline: IngestionPipeline = Depends(get_ingestion_pipeline),  # noqa: B008
+) -> dict[str, str]:
+    """Remove a document and all its chunks from the knowledge base."""
+    await pipeline.vector_store.delete(source_name)
+    return {"status": "success", "message": f"Document '{source_name}' deleted."}

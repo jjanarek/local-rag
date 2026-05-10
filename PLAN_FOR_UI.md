@@ -76,13 +76,14 @@ Streamlit's `st.session_state` will be used to track:
 
 ### Phase 5.4: Knowledge Base Management (Integration)
 - **Document Inventory:**
-    - **Backend:** Implement `GET /ingest/files` to return a unique list of filenames from Qdrant.
+    - **Backend:** [DONE] Implement `GET /ingest/files` to return a unique list of filenames from Qdrant.
     - **UI:** Fetch this list on application startup and after every ingestion/deletion.
 - **Document Deletion:**
-    - **Backend:** Implement `DELETE /ingest/file/{source_name}` to remove all associated chunks.
+    - **Backend:** [DONE] Implement `DELETE /ingest/file/{source_name}` to remove all associated chunks.
     - **UI:** Connect the "Trash" icon to this endpoint.
 - **Search Parameter Sync:**
-    - **Backend:** Update `/chat/` to safely extract `top_k` and `min_score` from `request.parameters` without passing them to the LLM.
+    - **Backend:** [DONE] Update `/chat/` to safely extract `top_k` and `min_score` from `request.parameters` without passing them to the LLM.
+
 
 ### Phase 5.5: Polishing & Aesthetics
 - Add custom CSS for a "Senior-level" look.

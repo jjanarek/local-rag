@@ -98,6 +98,29 @@ class QdrantStore(VectorStore):
 
         return results
 
+    async def list_documents(self) -> list[str]:
+        """Retrieve unique document names from the collection"""
+        await self._ensure_collection_exists()
+
+        sources: set[str] = set()
+        next_page_offset = None
+
+        while True:
+            points, next_page_offset = await self.client.scroll(
+                collection_name=self.collection_name,
+                limit=100,
+                with_payload=["metadata.source"],
+                offset=next_page_offset,
+            )
+            for point in points:
+                if point.payload and "metadata" in point.payload:
+                    sources.add(point.payload["metadata"]["source"])
+
+            if not next_page_offset:
+                break
+
+        return sorted(sources)
+
     async def delete(self, source_name: str) -> None:
         """Delete the entries in vector database for a given source_name"""
         await self._ensure_collection_exists()
