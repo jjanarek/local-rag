@@ -384,3 +384,32 @@
 - The transition from session-based tracking to backend-driven inventory makes the system feel truly production-ready.
 - The use of `with_payload` filtering in Qdrant ensures listing remains fast even with thousands of chunks.
 
+
+# Session 16 - May 10, 2026
+
+## 📋 Today's Progress
+- **Step 5.4.2: UI Knowledge Base Integration** is complete.
+    - **Inventory Sync**: Implemented `fetch_document_list` in `ui/app.py` to synchronize the UI sidebar with the actual backend inventory.
+    - **Hard Deletion**: Integrated API-driven deletion to remove chunks from Qdrant permanently.
+    - **Search Parameter Overrides**: Wired sliders for `top_k` and `min_score` into the RAG pipeline.
+- **Critical Bug Fix: Parameter Leak**:
+    - Identified a `TypeError` where search-specific parameters were being passed to the LLM client.
+    - Refactored `core/models.py` to use a structured `ChatParameters` model with explicit `get_search_params()` and `get_llm_params()` methods.
+    - Achieved robust API validation and type-safe orchestration in `api/routers/chat.py`.
+- **UI Polishing**:
+    - Created `ui/.streamlit/config.toml` to align the Streamlit `maxUploadSize` with project settings, providing accurate user feedback (10MB limit) and bandwidth protection.
+    - Documented the "Stateless Chat" strategy in the UI code to explain the empty history decision for local performance.
+
+## 🛠️ Completed Tasks
+- [x] `ui/app.py`: Full synchronization with backend Knowledge Base inventory.
+- [x] `core/models.py`: Implemented structured `ChatParameters` for safe parameter dispatching.
+- [x] `api/routers/chat.py`: Updated to use structured parameter extraction.
+- [x] `ui/.streamlit/config.toml`: Aligned UI upload limits with system settings.
+
+## 🚀 Next Session
+- **Task**: Step 6: Full Containerization.
+- **Goal**: Create Dockerfiles for the API and UI, and refine the `docker-compose.yaml` to orchestrate the entire stack as a single unit.
+
+## 📝 Notes
+- The transition to structured Pydantic models significantly improved the robustness and clarity of the API layer.
+- Using Streamlit's native configuration for upload limits is the preferred "Senior" way to handle UI feedback.

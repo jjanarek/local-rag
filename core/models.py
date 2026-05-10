@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DocumentMetadata(BaseModel):
@@ -57,11 +57,40 @@ class Message(BaseModel):
     content: str = Field(..., description="Text content")
 
 
+class ChatParameters(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    top_k: int | None = Field(
+        default=None, ge=1, le=50, description="Max number of retrieved documents."
+    )
+    min_score: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Minimal similarity score for retrieved documents for inference.",
+    )
+
+    def get_search_params(self, default_k: int, default_score: float) -> tuple[int, float]:
+        return (
+            self.top_k if self.top_k is not None else default_k,
+            self.min_score if self.min_score is not None else default_score,
+        )
+
+    def get_llm_params(self) -> dict[Any, Any]:
+        """Return only parameters intended for the LLM"""
+        params = self.model_dump(exclude_none=True)
+        params.pop("top_k", None)
+        params.pop("min_score", None)
+        return params
+
+
 class ChatRequest(BaseModel):
     query: str = Field(..., description="The user's query.")
     history: list[Message] = Field(default_factory=list, description="Conversation history.")
     stream: bool = Field(default=False, description="Whether to stream the response.")
-    parameters: dict[str, Any] = Field(default_factory=dict, description="LLM settings.")
+    parameters: ChatParameters = Field(
+        default_factory=ChatParameters, description="Set of parameters for search and LLMs"
+    )
 
 
 class ChatSource(BaseModel):

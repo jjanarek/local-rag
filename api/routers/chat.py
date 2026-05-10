@@ -35,8 +35,10 @@ async def chat_retrieval(
     try:
         query_embedding = await embedding_service.embed_query(request.query)
 
-        top_k = request.parameters.get("top_k", settings.MAX_NUMBER_OF_HITS)
-        min_score = request.parameters.get("min_score", settings.MIN_SCORE)
+        top_k, min_score = request.parameters.get_search_params(
+            settings.MAX_NUMBER_OF_HITS, settings.MIN_SCORE
+        )
+        llm_params = request.parameters.get_llm_params()
 
         hits: list[tuple[DocumentChunk, float]] = await vector_store.search(
             query_embedding, limit=top_k
@@ -74,7 +76,7 @@ async def chat_retrieval(
                 try:
                     yield json.dumps({"sources": [s.model_dump() for s in sources]}) + "\n"
 
-                    async for chunk in chat_service.chat_stream(messages, **request.parameters):
+                    async for chunk in chat_service.chat_stream(messages, **llm_params):
                         yield json.dumps({"answer": chunk}) + "\n"
                 except Exception as e:
                     logger.exception(f"Streaming error: {e}")
@@ -82,7 +84,7 @@ async def chat_retrieval(
 
             return StreamingResponse(stream_generator(), media_type="application/x-ndjson")
 
-        answer = await chat_service.chat(messages, **request.parameters)
+        answer = await chat_service.chat(messages, **llm_params)
         return ChatResponse(answer=answer, sources=sources)
 
     except Exception as e:

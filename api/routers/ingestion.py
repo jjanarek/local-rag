@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 
 from api.dependencies import get_ingestion_pipeline
+from core.config import settings
 from core.models import IngestionResult
 
 if TYPE_CHECKING:
@@ -29,6 +30,15 @@ async def ingest_file(
     if suffix not in [".pdf", ".txt", ".md"]:
         raise HTTPException(
             status_code=400, detail=f"File extension {suffix} not supported. Use PDF, TXT, or MD."
+        )
+
+    if file.size and file.size > settings.MAX_UPLOAD_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail=(
+                "File too large. Max allowed size is "
+                f"{settings.MAX_UPLOAD_SIZE // (1024 * 1024)}MB."
+            ),
         )
 
     # Save the incoming file
